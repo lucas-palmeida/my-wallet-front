@@ -1,8 +1,9 @@
 import styled from "styled-components";
 
 export default function EntryItem() {
+    const type = true;
     return (
-        <EntryBox><p><span>30/01</span> Almoço mãe</p> <span>39,90</span></EntryBox>
+        <EntryBox><p><span>30/01</span> Almoço mãe</p> <span className={`${type ? "entrada" : "saida"}`}>39,90</span></EntryBox>
     )
 }
 
@@ -18,10 +19,13 @@ const EntryBox = styled.div`
         font-weight: 400;
         line-height: 19px;
     }
-    & span:nth-child(1) {
+    & span {
         color: #C6C6C6;
     }
-    & span:nth-child(2) {
+    & span.saida {
         color: #C70000;
+    }
+    & span.entrada {
+        color: #03AC00;
     }
 `;

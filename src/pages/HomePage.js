@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import ContainerScreen from "../components/ContainerScreen";
 import EntryItem from "../components/EntryItem";
@@ -28,8 +29,8 @@ export default function HomePage() {
                 
             </ContainerBalance>
             <ContainerButtons>
-                <ButtonMov><ion-icon name="add-circle-outline"></ion-icon>Nova<br/>entrada</ButtonMov>
-                <ButtonMov><ion-icon name="remove-circle-outline"></ion-icon>Nova<br/>entrada</ButtonMov>
+                <ButtonMov to="/nova-entrada"><ion-icon name="add-circle-outline"></ion-icon>Nova<br/>entrada</ButtonMov>
+                <ButtonMov to="/nova-saida"><ion-icon name="remove-circle-outline"></ion-icon>Nova<br/>entrada</ButtonMov>
             </ContainerButtons>
         </ContainerScreen>
     );
@@ -96,7 +97,7 @@ const ContainerButtons = styled.div`
     justify-content: space-between;
 `;
 
-const ButtonMov = styled.div`
+const ButtonMov = styled(Link)`
     height: 114px;
     width: 155px;
     display: flex;
