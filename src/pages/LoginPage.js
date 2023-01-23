@@ -5,12 +5,14 @@ import StyledInput from '../components/StyledInput';
 import StyledButton from '../components/StyledButton';
 import LinkAlternativo from '../components/LinkAlternativo';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import apiAuth from "../services/apiAuth";
+import UserContext from "../context/UserContext";
 
 export default function LoginPage() {
     const [form, setForm] = useState({ email: "", password: "" })
     const navigate = useNavigate()
+    const { setUser } = useContext(UserContext);
 
     function handleForm(e) {
         setForm({ ...form, [e.target.name]: e.target.value })
@@ -21,8 +23,8 @@ export default function LoginPage() {
 
         apiAuth.login(form)
             .then(res => {
-                const { token } = res.data                                 // VERIFICAR RETORNO DE DADOS PARA TELA DE BOAS VINDAS
-                localStorage.setItem("user", JSON.stringify({ token }))    // VERIFICAR RETORNO DE DADOS PARA TELA DE BOAS VINDAS
+                const { name, token } = res.data;
+                setUser({ name, token });
                 navigate("/home")
             })
             .catch(err => {

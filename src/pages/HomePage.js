@@ -1,27 +1,62 @@
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import ContainerScreen from "../components/ContainerScreen";
 import EntryItem from "../components/EntryItem";
 import StyledSubtitle from "../components/StyledSubtitle";
+import UserContext from "../context/UserContext";
+import apiBalance from "../services/apiBalance";
 
 export default function HomePage() {
-    const balance = true;  
+    const [entries, setEntries] = useState([]);
+    const { user } = useContext(UserContext);
+    const [ total, setTotal ] = useState(0);
+
+    useEffect(getListBalance, [realizaSoma]);
+
+    function getListBalance() {
+        apiBalance.getEntries(user.token)
+            .then(res => {
+                setEntries(res.data);
+                realizaSoma();
+            })
+            .catch(err => {
+                if (!user.token) {
+                    alert("Faça login")
+                } else {
+                    alert(err.response.data.message)
+                }
+            })
+    }
+
+    function realizaSoma() {
+        let soma = 0;
+        for(let i = 0; i < entries.length; i++) {
+            if(entries[i].isTrue === true) {
+                soma += parseInt(entries[i].amount);
+            }
+            else {
+                soma -= parseInt(entries[i].amount);
+            }
+        }
+        setTotal(soma);
+    }
 
     return (
         <ContainerScreen>
             <StyledHeader>
-                <StyledSubtitle>Olá, Fulano</StyledSubtitle>
+                <StyledSubtitle>Olá, {user.name}</StyledSubtitle>
                 <ion-icon name="log-out-outline"></ion-icon>
             </StyledHeader>
             <ContainerBalance>
-                {balance ? (
+                {entries.length > 0 ? (
                     <>
                         <ContainerEntries>
-                            <EntryItem />
-                            <EntryItem />
-                            <EntryItem />
+                            {entries.map(e => (
+                                <EntryItem key={e._id} day={e.day} description={e.description} amount={e.amount} isTrue={e.isTrue} />
+                            ))}
                         </ContainerEntries>
-                        <ContainerTotal>SALDO <span>2849,96</span></ContainerTotal>
+                        <ContainerTotal>SALDO <span className={`${total > 0 ? "verde" : "vermelho"}`}>R$ {total}</span></ContainerTotal>
                     </>
                 ) : (
                 <StyledParagraph>Não há registros de entrada ou saída</StyledParagraph>
@@ -30,7 +65,7 @@ export default function HomePage() {
             </ContainerBalance>
             <ContainerButtons>
                 <ButtonMov to="/nova-entrada"><ion-icon name="add-circle-outline"></ion-icon>Nova<br/>entrada</ButtonMov>
-                <ButtonMov to="/nova-saida"><ion-icon name="remove-circle-outline"></ion-icon>Nova<br/>entrada</ButtonMov>
+                <ButtonMov to="/nova-saida"><ion-icon name="remove-circle-outline"></ion-icon>Nova<br/>saída</ButtonMov>
             </ContainerButtons>
         </ContainerScreen>
     );
@@ -88,6 +123,9 @@ const ContainerTotal = styled.div`
     font-size: 17px;
     font-weight: 400;
     color: #03AC00;
+    }
+    & span.vermelho {
+        color: #C70000;
     }
 `;
 

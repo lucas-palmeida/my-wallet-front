@@ -1,9 +1,10 @@
 import styled from "styled-components";
 
-export default function EntryItem() {
-    const type = true;
+export default function EntryItem(props) {
+    const { day, description, amount, isTrue } = props;
+    
     return (
-        <EntryBox><p><span>30/01</span> Almoço mãe</p> <span className={`${type ? "entrada" : "saida"}`}>39,90</span></EntryBox>
+        <EntryBox><p><span>{day}</span> {description}</p> <span className={`${isTrue ? "entrada" : "saida"}`}>{amount}</span></EntryBox>
     )
 }
 
